@@ -15,13 +15,15 @@ public class BoardSaveRequestDto {
     private Long likes = 0L;
     private Long views = 0L;
 
+    private Long userId;
     @Builder
-    public BoardSaveRequestDto(String title, String content, String tag) {
+    public BoardSaveRequestDto(String title, String content, String tag, Long userId) {
         this.title = title;
         this.content = content;
         this.likes = 0L;
         this.views = 0L;
         this.tag = tag;
+        this.userId = userId;
     }
 
     public Board toEntity() {

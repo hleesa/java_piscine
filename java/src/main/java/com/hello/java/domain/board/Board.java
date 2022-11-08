@@ -1,6 +1,8 @@
 package com.hello.java.domain.board;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hello.java.domain.BaseTimeEntity;
+import com.hello.java.domain.user.User;
 import com.hello.java.web.dto.BoardUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,17 +17,27 @@ public class Board extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_id")
     private Long id;
     private String title;
     private String content;
+
+    private String author;
     private String tag;
     private Long likes;
     private Long views;
 
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Board(String title, String content, Long likes, Long views, String tag) {
+    public Board(String title, String content, String author, Long likes, Long views, String tag) {
         this.title = title;
         this.content = content;
+        this.author = author;
         this.likes = likes;
         this.views = views;
         this.tag = tag;
@@ -46,6 +58,12 @@ public class Board extends BaseTimeEntity {
 
     public void updateViews() {
         ++this.views;
+    }
+
+    //==연관관계 메소드==//
+    public void setUser(User user) {
+        this.user = user;
+        user.getBoards().add(this);
     }
 
 }

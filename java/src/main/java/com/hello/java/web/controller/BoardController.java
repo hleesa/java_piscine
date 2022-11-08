@@ -3,20 +3,38 @@ package com.hello.java.web.controller;
 
 import com.hello.java.domain.board.Board;
 import com.hello.java.service.BoardService;
+import com.hello.java.service.UserService;
 import com.hello.java.web.dto.BoardSaveRequestDto;
 import com.hello.java.web.dto.BoardUpdateRequestDto;
 import com.hello.java.web.dto.BoardListResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 public class BoardController {
     private final BoardService boardService;
+    private final UserService userService;
+
+//    @PostMapping("/board")
+//    public Board saveBoard(@RequestBody BoardSaveRequestDto requestDto) {
+//        return boardService.save(requestDto.toEntity());
+//    }
 
     @PostMapping("/board")
-    public Board saveBoard(@RequestBody BoardSaveRequestDto requestDto) {
-        return boardService.save(requestDto.toEntity());
+    public Board save(@RequestBody BoardSaveRequestDto requestDto) {
+        Board board = Board.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .tag(requestDto.getTag())
+                .likes(requestDto.getLikes())
+                .views(requestDto.getViews())
+                .author(userService.findById(requestDto.getUserId()).getUsername())
+                .build();
+
+        return boardService.save(requestDto.getUserId(), board);
     }
 
     @GetMapping("/board/{boardId}")
@@ -43,5 +61,10 @@ public class BoardController {
     @PutMapping("/board/like/{boardId}")
     public void updateLikes(@PathVariable("boardId") Long boardId, @RequestParam Boolean isLike) {
         boardService.updateLikes(boardId, isLike);
+    }
+
+    @GetMapping("/boards/{username}")
+    public List<Board> findBoardsByUsername(@PathVariable("username") String username) {
+        return boardService.findBoardsByAuthor(username);
     }
 }
