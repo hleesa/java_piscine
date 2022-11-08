@@ -3,8 +3,10 @@ package com.hello.java.web.dto;
 import com.hello.java.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class UserSaveRequestDto {
 
     private String username;

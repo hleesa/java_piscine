@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
-@Entity
 @NoArgsConstructor
+@Entity
 public class Board extends BaseTimeEntity {
 
     @Id
