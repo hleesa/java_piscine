@@ -5,6 +5,7 @@ import com.hello.java.domain.board.BoardRepository;
 import com.hello.java.web.dto.BoardListResponseDto;
 import com.hello.java.web.dto.BoardUpdateRequestDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;

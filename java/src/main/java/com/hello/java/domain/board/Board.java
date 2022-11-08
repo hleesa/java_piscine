@@ -18,9 +18,9 @@ public class Board extends BaseTimeEntity {
     private Long id;
     private String title;
     private String content;
+    private String tag;
     private Long likes;
     private Long views;
-    private String tag;
 
     @Builder
     public Board(String title, String content, Long likes, Long views, String tag) {
