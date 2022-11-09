@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 public class BoardController {
     private final BoardService boardService;
-    private final UserService userService;
 
     @PostMapping("/board")
     public Board save(@RequestBody BoardSaveRequestDto requestDto) {
@@ -27,9 +26,7 @@ public class BoardController {
                 .tag(requestDto.getTag())
                 .likes(requestDto.getLikes())
                 .views(requestDto.getViews())
-                .user(userService.findById(requestDto.getUserId()))
                 .build();
-
         return boardService.save(requestDto.getUserId(), board);
     }
 

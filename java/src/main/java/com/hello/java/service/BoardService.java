@@ -23,6 +23,7 @@ public class BoardService {
 
     public Board save(Long userId, Board board) {
         User user = userRepository.findById(userId).orElseThrow();
+        board.setUser(user);
         boardRepository.save(board);
         return board;
     }
