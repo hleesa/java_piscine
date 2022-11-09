@@ -4,6 +4,7 @@ import com.hello.java.domain.board.Board;
 import com.hello.java.domain.board.BoardRepository;
 import com.hello.java.domain.user.User;
 import com.hello.java.domain.user.UserRepository;
+import com.hello.java.web.dto.BoardDeleteRequestDto;
 import com.hello.java.web.dto.BoardListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ public class BoardService {
 
     public Board save(Long userId, Board board) {
         User user = userRepository.findById(userId).orElseThrow();
-//        board.setUser(user);
         boardRepository.save(board);
         return board;
     }
@@ -49,9 +49,12 @@ public class BoardService {
         return boardBoardListResponseDto;
     }
 
-    public void delete(Long id) {
-        Board board = boardRepository.findById(id).orElseThrow();
-        boardRepository.delete(board);
+    public void delete(BoardDeleteRequestDto requestDto) {
+        Long boardId = requestDto.getBoardId();
+        Long userId = requestDto.getUserId();
+        Board board = boardRepository.findById(boardId).orElseThrow();
+        if (board.getUser().getId() == userId)
+            boardRepository.delete(board);
     }
 
     public void updateLikes(Long id, Boolean isLike) {

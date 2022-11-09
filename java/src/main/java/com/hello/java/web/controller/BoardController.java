@@ -4,6 +4,7 @@ package com.hello.java.web.controller;
 import com.hello.java.domain.board.Board;
 import com.hello.java.service.BoardService;
 import com.hello.java.service.UserService;
+import com.hello.java.web.dto.BoardDeleteRequestDto;
 import com.hello.java.web.dto.BoardSaveRequestDto;
 import com.hello.java.web.dto.BoardUpdateRequestDto;
 import com.hello.java.web.dto.BoardListResponseDto;
@@ -48,9 +49,9 @@ public class BoardController {
         return boardService.update(boardId, boardUpdateRequestDto.toEntity());
     }
 
-    @DeleteMapping("/board/{boardId}")
-    public void deleteBoard(@PathVariable("boardId") Long boardId) {
-        boardService.delete(boardId);
+    @DeleteMapping("/board")
+    public void deleteBoard(@RequestBody BoardDeleteRequestDto requestDto) {
+        boardService.delete(requestDto);
     }
 
     @PutMapping("/board/like/{boardId}")
