@@ -18,11 +18,6 @@ public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
 
-//    @PostMapping("/board")
-//    public Board saveBoard(@RequestBody BoardSaveRequestDto requestDto) {
-//        return boardService.save(requestDto.toEntity());
-//    }
-
     @PostMapping("/board")
     public Board save(@RequestBody BoardSaveRequestDto requestDto) {
         Board board = Board.builder()
@@ -32,7 +27,6 @@ public class BoardController {
                 .likes(requestDto.getLikes())
                 .views(requestDto.getViews())
                 .user(userService.findById(requestDto.getUserId()))
-                .author(userService.findById(requestDto.getUserId()).getUsername())
                 .build();
 
         return boardService.save(requestDto.getUserId(), board);
@@ -66,6 +60,8 @@ public class BoardController {
 
     @GetMapping("/boards/{username}")
     public List<Board> findBoardsByUsername(@PathVariable("username") String username) {
-        return boardService.findBoardsByAuthor(username);
+        return boardService.findBoardsByUsername(username);
     }
+
+
 }

@@ -6,6 +6,5 @@ import java.util.List;
 
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
-
-    List<Board> findBoardsByAuthor(String author);
+    List<Board> findBoardsByUserUsername(String username);
 }

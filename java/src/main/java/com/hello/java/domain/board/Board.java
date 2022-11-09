@@ -21,7 +21,6 @@ public class Board extends BaseTimeEntity {
     private Long id;
     private String title;
     private String content;
-    private String author;
     private String tag;
     private Long likes;
     private Long views;
@@ -31,10 +30,9 @@ public class Board extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Board(String title, String content, String author, Long likes, Long views, String tag, User user) {
+    public Board(String title, String content, Long likes, Long views, String tag, User user) {
         this.title = title;
         this.content = content;
-        this.author = author;
         this.likes = likes;
         this.views = views;
         this.tag = tag;
@@ -58,11 +56,4 @@ public class Board extends BaseTimeEntity {
     public void updateViews() {
         ++this.views;
     }
-
-    //==연관관계 메소드==//
-//    public void setUser(User user) {
-//        this.user = user;
-//        user.getBoards().add(this);
-//    }
-
 }

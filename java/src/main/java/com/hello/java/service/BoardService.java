@@ -19,12 +19,6 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
-
-//    @Transactional
-//    public Board save(Board board) {
-//        return boardRepository.save(board);
-//    }
 
     public Board save(Long userId, Board board) {
         User user = userRepository.findById(userId).orElseThrow();
@@ -71,8 +65,8 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<Board> findBoardsByAuthor(String author) {
-        List<Board> boards = boardRepository.findBoardsByAuthor(author);
-        return boards;
+    public List<Board> findBoardsByUsername(String username) {
+        return boardRepository.findBoardsByUserUsername(username);
     }
+
 }

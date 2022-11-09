@@ -17,11 +17,6 @@ public class UserController {
         return userService.join(requestDto.toEntity());
     }
 
-//    @GetMapping("/user/{userId}")
-//    public User findById(@PathVariable("userId") Long userId) {
-//        return userService.findById(userId);
-//    }
-
     @GetMapping("/user/{username}")
     public User findByName(@PathVariable("username") String username) {
         return userService.findByName(username);
