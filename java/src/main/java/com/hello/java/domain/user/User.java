@@ -23,9 +23,9 @@ public class User{
     private String username;
     private String password;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user")
-    private List<Board> boards = new ArrayList<>();
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "user")
+//    private List<Board> boards = new ArrayList<>();
 
     @Builder
     public User(String username, String password) {

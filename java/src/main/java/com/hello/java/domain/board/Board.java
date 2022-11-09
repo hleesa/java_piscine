@@ -21,27 +21,26 @@ public class Board extends BaseTimeEntity {
     private Long id;
     private String title;
     private String content;
-
     private String author;
     private String tag;
     private Long likes;
     private Long views;
 
-
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Board(String title, String content, String author, Long likes, Long views, String tag) {
+    public Board(String title, String content, String author, Long likes, Long views, String tag, User user) {
         this.title = title;
         this.content = content;
         this.author = author;
         this.likes = likes;
         this.views = views;
         this.tag = tag;
+        this.user = user;
     }
+
     public void update(Board board) {
         this.title = board.getTitle();
         this.content = board.getContent();
@@ -61,9 +60,9 @@ public class Board extends BaseTimeEntity {
     }
 
     //==연관관계 메소드==//
-    public void setUser(User user) {
-        this.user = user;
-        user.getBoards().add(this);
-    }
+//    public void setUser(User user) {
+//        this.user = user;
+//        user.getBoards().add(this);
+//    }
 
 }

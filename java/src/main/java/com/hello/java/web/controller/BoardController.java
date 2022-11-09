@@ -31,6 +31,7 @@ public class BoardController {
                 .tag(requestDto.getTag())
                 .likes(requestDto.getLikes())
                 .views(requestDto.getViews())
+                .user(userService.findById(requestDto.getUserId()))
                 .author(userService.findById(requestDto.getUserId()).getUsername())
                 .build();
 
