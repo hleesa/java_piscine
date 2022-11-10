@@ -61,7 +61,7 @@ class BoardServiceTest {
         boardService.save(user.getId(), boardSaveRequestDto.toEntity());
 
         // when
-        List<Board> boardList = boardService.findBoards().getBoardList();
+        List<Board> boardList = boardService.finaAll().getBoardList();
 
         //then
         Board findBoard = boardList.get(0);
@@ -198,8 +198,8 @@ class BoardServiceTest {
         boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
 
         //then
-        List<Board> boardList1 = boardService.findBoardsByUsername(user1.getUsername());
-        List<Board> boardList2 = boardService.findBoardsByUsername(user2.getUsername());
+        List<Board> boardList1 = boardService.findAllByUsername(user1.getUsername());
+        List<Board> boardList2 = boardService.findAllByUsername(user2.getUsername());
 
         assertThat(boardList1.size()).isEqualTo(1);
         assertThat(boardList2.size()).isEqualTo(2);
@@ -250,12 +250,12 @@ class BoardServiceTest {
                 .boardId(board1.getId())
                 .build();
 
-        List<Board> boardList1 = boardService.findBoardsByUsername(user1.getUsername());
+        List<Board> boardList1 = boardService.findAllByUsername(user1.getUsername());
         //then
         boardService.delete(user1Board2DelDto);
         assertThat(boardList1.size()).isEqualTo(1);
         boardService.delete(user1Board1DelDto);
-        boardList1 = boardService.findBoardsByUsername(user1.getUsername());
+        boardList1 = boardService.findAllByUsername(user1.getUsername());
         assertThat(boardList1.size()).isEqualTo(0);
 
     }

@@ -3,12 +3,13 @@ package com.hello.java.web.controller;
 
 import com.hello.java.domain.board.Board;
 import com.hello.java.service.BoardService;
-import com.hello.java.service.UserService;
 import com.hello.java.web.dto.BoardDeleteRequestDto;
 import com.hello.java.web.dto.BoardSaveRequestDto;
 import com.hello.java.web.dto.BoardUpdateRequestDto;
 import com.hello.java.web.dto.BoardListResponseDto;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,23 +32,23 @@ public class BoardController {
     }
 
     @GetMapping("/board/{boardId}")
-    public Board findBoard(@PathVariable("boardId") Long boardId) {
+    public Board findOne(@PathVariable("boardId") Long boardId) {
         boardService.updateViews(boardId);
         return boardService.findOne(boardId).orElseThrow();
     }
 
     @GetMapping("/board")
-    public BoardListResponseDto findBoards() {
-        return boardService.findBoards();
+    public BoardListResponseDto findAll() {
+        return boardService.finaAll();
     }
 
     @PutMapping("/board/{boardId}")
-    public Long updateBoard(@PathVariable("boardId") Long boardId, @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
+    public Long update(@PathVariable("boardId") Long boardId, @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
         return boardService.update(boardId, boardUpdateRequestDto.toEntity());
     }
 
     @DeleteMapping("/board")
-    public void deleteBoard(@RequestBody BoardDeleteRequestDto requestDto) {
+    public void delete(@RequestBody BoardDeleteRequestDto requestDto) {
         boardService.delete(requestDto);
     }
 
@@ -57,9 +58,12 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{username}")
-    public List<Board> findBoardsByUsername(@PathVariable("username") String username) {
-        return boardService.findBoardsByUsername(username);
+    public List<Board> findAllByUsername(@PathVariable("username") String username) {
+        return boardService.findAllByUsername(username);
     }
-
+    @GetMapping("/boards/page/{username}")
+    public Page<Board> findPageByUsername(@PathVariable("username") String username, Pageable pageable) {
+        return boardService.findPageByUsername(username, pageable);
+    }
 
 }

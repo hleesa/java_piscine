@@ -7,6 +7,8 @@ import com.hello.java.domain.user.UserRepository;
 import com.hello.java.web.dto.BoardDeleteRequestDto;
 import com.hello.java.web.dto.BoardListResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +42,7 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardListResponseDto findBoards() {
+    public BoardListResponseDto finaAll() {
 
         List<Board> boards = boardRepository.findAll();
         BoardListResponseDto boardBoardListResponseDto = BoardListResponseDto.builder()
@@ -69,8 +71,12 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<Board> findBoardsByUsername(String username) {
+    public List<Board> findAllByUsername(String username) {
         return boardRepository.findBoardsByUserUsername(username);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Board> findPageByUsername(String username, Pageable pageable) {
+        return boardRepository.findAllByUserUsername(username, pageable);
+    }
 }
