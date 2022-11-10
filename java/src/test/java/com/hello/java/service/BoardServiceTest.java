@@ -35,12 +35,7 @@ class BoardServiceTest {
     @Autowired
     UserService userService;
 
-//    @BeforeEach
-//    public void cleanup() {
-//        boardRepository.deleteAll();
-//    }
     @Test
-    @Transactional
     public void 게시글이_저장된다() {
 
         // given
@@ -81,7 +76,6 @@ class BoardServiceTest {
     }
 
     @Test
-    @Transactional
     public void 게시글이_수정되다() {
 
         // given
@@ -119,7 +113,6 @@ class BoardServiceTest {
     }
 
     @Test
-    @Transactional
     public void 좋아요가_변경된다() {
 
         String title = "42gg";
@@ -145,7 +138,6 @@ class BoardServiceTest {
     }
 
     @Test
-    @Transactional
     public void 조회수가_올라간다() {
 
         String title = "42gg";
@@ -171,7 +163,6 @@ class BoardServiceTest {
     }
 
     @Test
-    @Transactional
     public void 유저가작성한_게시글이_조회된다() {
 
         //given
@@ -218,7 +209,6 @@ class BoardServiceTest {
     }
 
     @Test
-    @Transactional
     public void 유저가_작성한글이_삭제된다() {
 
         //given
@@ -273,7 +263,6 @@ class BoardServiceTest {
     }
 
     @Test
-    @Transactional
     public void 유저가_작성한글이_페이지로_조회된다() {
 
         //given
