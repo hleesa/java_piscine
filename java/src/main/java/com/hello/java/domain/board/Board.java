@@ -24,7 +24,6 @@ public class Board extends BaseTimeEntity {
     private String tag;
     private Long likes;
     private Long views;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

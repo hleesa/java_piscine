@@ -4,6 +4,7 @@ import com.hello.java.domain.board.Board;
 import com.hello.java.domain.board.BoardRepository;
 import com.hello.java.domain.user.User;
 import com.hello.java.domain.user.UserRepository;
+import com.hello.java.web.dto.BoardDeleteRequestDto;
 import com.hello.java.web.dto.BoardSaveRequestDto;
 import com.hello.java.web.dto.BoardUpdateRequestDto;
 import org.junit.jupiter.api.Test;
@@ -191,16 +192,71 @@ class BoardServiceTest {
                 .tag(tag)
                 .build();
         //when
-        Board board1 = boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+        boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
 
-        Board board2 = boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
-        Board board3 = boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
+        boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
+        boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
 
         //then
-        List<Board> findBoards1 = boardService.findBoardsByUsername(user1.getUsername());
-        List<Board> findBoards2 = boardService.findBoardsByUsername(user2.getUsername());
+        List<Board> boardList1 = boardService.findBoardsByUsername(user1.getUsername());
+        List<Board> boardList2 = boardService.findBoardsByUsername(user2.getUsername());
 
-        assertThat(findBoards1.size()).isEqualTo(1);
-        assertThat(findBoards2.size()).isEqualTo(2);
+        assertThat(boardList1.size()).isEqualTo(1);
+        assertThat(boardList2.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 유저가_작성한글이_삭제된다() {
+
+        //given
+        /**
+         * user 생성 및 저장
+         */
+        String username1 = "salee2";
+        String password1 = "7513";
+        User user1 = User.builder()
+                .username(username1)
+                .password(password1)
+                .build();
+        userService.join(user1);
+        String username2 = "himjeong";
+        String password2 = "010";
+        User user2 = User.builder()
+                .username(username2)
+                .password(password2)
+                .build();
+        userService.join(user2);
+
+        /**
+         * board 셍성 및 저장
+         */
+        String title = "42gg";
+        String content = "ping-ping";
+        String tag = "game";
+        BoardSaveRequestDto boardSaveRequestDto = BoardSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .tag(tag)
+                .build();
+        Board board1 = boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+        Board board2 = boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
+        //when
+        BoardDeleteRequestDto user1Board2DelDto = BoardDeleteRequestDto.builder()
+                .userId(user1.getId())
+                .boardId(board2.getId())
+                .build();
+        BoardDeleteRequestDto user1Board1DelDto = BoardDeleteRequestDto.builder()
+                .userId(user1.getId())
+                .boardId(board1.getId())
+                .build();
+
+        List<Board> boardList1 = boardService.findBoardsByUsername(user1.getUsername());
+        //then
+        boardService.delete(user1Board2DelDto);
+        assertThat(boardList1.size()).isEqualTo(1);
+        boardService.delete(user1Board1DelDto);
+        boardList1 = boardService.findBoardsByUsername(user1.getUsername());
+        assertThat(boardList1.size()).isEqualTo(0);
+
     }
 }
