@@ -10,6 +10,9 @@ import com.hello.java.web.dto.BoardUpdateRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,7 +35,12 @@ class BoardServiceTest {
     @Autowired
     UserService userService;
 
+//    @BeforeEach
+//    public void cleanup() {
+//        boardRepository.deleteAll();
+//    }
     @Test
+    @Transactional
     public void 게시글이_저장된다() {
 
         // given
@@ -73,6 +81,7 @@ class BoardServiceTest {
     }
 
     @Test
+    @Transactional
     public void 게시글이_수정되다() {
 
         // given
@@ -110,6 +119,7 @@ class BoardServiceTest {
     }
 
     @Test
+    @Transactional
     public void 좋아요가_변경된다() {
 
         String title = "42gg";
@@ -135,6 +145,7 @@ class BoardServiceTest {
     }
 
     @Test
+    @Transactional
     public void 조회수가_올라간다() {
 
         String title = "42gg";
@@ -160,6 +171,7 @@ class BoardServiceTest {
     }
 
     @Test
+    @Transactional
     public void 유저가작성한_게시글이_조회된다() {
 
         //given
@@ -206,6 +218,7 @@ class BoardServiceTest {
     }
 
     @Test
+    @Transactional
     public void 유저가_작성한글이_삭제된다() {
 
         //given
@@ -257,6 +270,48 @@ class BoardServiceTest {
         boardService.delete(user1Board1DelDto);
         boardList1 = boardService.findAllByUsername(user1.getUsername());
         assertThat(boardList1.size()).isEqualTo(0);
+    }
 
+    @Test
+    @Transactional
+    public void 유저가_작성한글이_페이지로_조회된다() {
+
+        //given
+        /**
+         * user 생성
+         */
+        String username1 = "salee2";
+        String password1 = "7513";
+        User user1 = User.builder()
+                .username(username1)
+                .password(password1)
+                .build();
+        userService.join(user1);
+        /**
+         * board 셍성
+         */
+        String title = "42gg";
+        String content = "ping-ping";
+        String tag = "game";
+        BoardSaveRequestDto boardSaveRequestDto = BoardSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .tag(tag)
+                .build();
+        //when
+        Board firstBoard = boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+        int totalBoards = 42;
+        for(int i=1; i <totalBoards; ++i)
+            boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+
+        //then
+        int page = 1;
+        int size = 5;
+        Pageable pageable1 = PageRequest.of(page, size);
+        Page<Board> boardList1 = boardService.findPageByUsername(username1, pageable1);
+        assertThat(boardList1.getContent().size()).isEqualTo(size);
+        assertThat(boardList1.getContent().get(0).getId()).isEqualTo(size*page + firstBoard.getId());
+        assertThat(boardList1.getTotalElements()).isEqualTo(totalBoards);
+        assertThat(boardList1.getTotalPages()).isEqualTo((totalBoards+size-1)/size );
     }
 }
