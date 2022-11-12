@@ -9,12 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardUpdateRequestDto {
 
+    private Long boardId;
     private String title;
     private String content;
     private String tag;
+    private Long userId;
 
     @Builder
-    public BoardUpdateRequestDto(String title, String content, String tag) {
+    public BoardUpdateRequestDto(Long boardId, String title, String content, String tag) {
+        this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.tag = tag;
@@ -25,6 +28,10 @@ public class BoardUpdateRequestDto {
                 .content(content)
                 .tag(tag)
                 .build();
+    }
+
+    public void setBoardId(Long boardId) {
+        this.boardId = boardId;
     }
 
 }

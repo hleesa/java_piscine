@@ -6,20 +6,21 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class BoardListResponseDto{
 
-    private List<Board> boardList;
-    private int total;
+    private List<BoardResponseDto> boardDtoList;
+    private int size;
 
     public BoardListResponseDto() {
-        this.boardList = new ArrayList<Board>();
+        this.boardDtoList = new ArrayList<BoardResponseDto>();
     }
 
     @Builder
-    public BoardListResponseDto(List<Board> boards, int total) {
-        this.boardList = boards;
-        this.total = total;
+    public BoardListResponseDto(List<Board> boardDtoList, int size) {
+        this.boardDtoList = boardDtoList.stream().map(BoardResponseDto::new).collect(Collectors.toList());
+        this.size = size;
     }
 }

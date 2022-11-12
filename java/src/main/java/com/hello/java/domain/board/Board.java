@@ -1,14 +1,15 @@
 package com.hello.java.domain.board;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hello.java.domain.BaseTimeEntity;
 import com.hello.java.domain.user.User;
-import com.hello.java.web.dto.BoardUpdateRequestDto;
+import com.hello.java.domain.userboard.Likes;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -22,17 +23,19 @@ public class Board extends BaseTimeEntity {
     private String title;
     private String content;
     private String tag;
-    private Long likes;
     private Long views;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    Set<Likes> likes = new HashSet<>();
+
     @Builder
-    public Board(String title, String content, Long likes, Long views, String tag, User user) {
+    public Board(Long id, String title, String content, Long views, String tag, User user) {
+        this.id = id;
         this.title = title;
         this.content = content;
-        this.likes = likes;
         this.views = views;
         this.tag = tag;
         this.user = user;
@@ -42,14 +45,6 @@ public class Board extends BaseTimeEntity {
         this.title = board.getTitle();
         this.content = board.getContent();
         this.tag = board.getTag();
-    }
-
-    public void updateLike(Boolean isLike) {
-        if (isLike) {
-            ++this.likes;
-        } else {
-            --this.likes;
-        }
     }
 
     public void setUser(User user) {

@@ -8,21 +8,24 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BoardSaveRequestDto {
+public class BoardResponseDto {
+
+    private Long id;
     private String title;
     private String content;
     private String tag;
-    private Long likes = 0L;
-    private Long views = 0L;
-    private Long userId;
-    @Builder
-    public BoardSaveRequestDto(String title, String content, String tag, Long userId) {
-        this.title = title;
-        this.content = content;
-        this.likes = 0L;
-        this.views = 0L;
-        this.tag = tag;
-        this.userId = userId;
+    private Long views;
+    private String username;
+    private int likes;
+
+    public BoardResponseDto(Board board) {
+        this.id = board.getId();
+        this.title = board.getTitle();
+        this.content = board.getContent();
+        this.tag = board.getTag();
+        this.views = board.getViews();
+        this.username = board.getUser().getUsername();
+        this.likes = board.getLikes().size();
     }
 
     public Board toEntity() {
@@ -33,4 +36,5 @@ public class BoardSaveRequestDto {
                 .tag(tag)
                 .build();
     }
+
 }

@@ -4,9 +4,7 @@ import com.hello.java.domain.board.Board;
 import com.hello.java.domain.board.BoardRepository;
 import com.hello.java.domain.user.User;
 import com.hello.java.domain.user.UserRepository;
-import com.hello.java.web.dto.BoardDeleteRequestDto;
-import com.hello.java.web.dto.BoardSaveRequestDto;
-import com.hello.java.web.dto.BoardUpdateRequestDto;
+import com.hello.java.web.dto.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,30 +57,39 @@ class BoardServiceTest {
                 .title(title)
                 .content(content)
                 .tag(tag)
+                .userId(user.getId())
                 .build();
-        boardService.save(user.getId(), boardSaveRequestDto.toEntity());
-        boardService.save(user.getId(), boardSaveRequestDto.toEntity());
+        boardService.save(boardSaveRequestDto);
+        boardService.save(boardSaveRequestDto);
 
         // when
-        List<Board> boardList = boardService.finaAll().getBoardList();
+
+        List<BoardResponseDto> boardDtoList = boardService.finaAll().getBoardDtoList();
 
         //then
-        Board findBoard = boardList.get(0);
-        assertThat(findBoard.getTitle()).isEqualTo(title);
-        assertThat(findBoard.getContent()).isEqualTo(content);
-        assertThat(findBoard.getLikes()).isEqualTo(0L);
-        assertThat(findBoard.getTag()).isEqualTo(tag);
-        assertThat(boardList.size()).isEqualTo(2);
+        BoardResponseDto boardResponseDto = boardDtoList.get(0);
+        assertThat(boardResponseDto.getTitle()).isEqualTo(title);
+        assertThat(boardResponseDto.getContent()).isEqualTo(content);
+        assertThat(boardResponseDto.getTag()).isEqualTo(tag);
+        assertThat(boardDtoList.size()).isEqualTo(2);
     }
 
     @Test
     public void 게시글이_수정되다() {
-
         // given
+        String username = "salee2";
+        String password = "7513";
+        User user = User.builder()
+                .username(username)
+                .password(password)
+                .build();
+        userService.join(user);
+
         Board board = BoardSaveRequestDto.builder()
                 .title("42gg")
                 .content("salee2")
                 .tag("#42gg")
+                .userId(user.getId())
                 .build()
                 .toEntity();
 
@@ -95,23 +102,23 @@ class BoardServiceTest {
         String content = "cadet";
         String tag = "#pipex";
 
-        Board updateBoard = BoardUpdateRequestDto.builder()
+        BoardUpdateRequestDto boardUpdateRequestDto = BoardUpdateRequestDto.builder()
                 .title(title)
                 .content(content)
                 .tag(tag)
-                .build()
-                .toEntity();
-        boardService.update(findBoards.get(0).getId(), updateBoard);
+                .boardId(findBoards.get(0).getId())
+                .build();
+        boardService.update(boardUpdateRequestDto);
 
         //then
         Board findBoard = findBoards.get(0);
         assertThat(findBoard.getTitle()).isEqualTo(title);
         assertThat(findBoard.getContent()).isEqualTo(content);
-        assertThat(findBoard.getLikes()).isEqualTo(0);
         assertThat(findBoard.getViews()).isEqualTo(0);
         assertThat(findBoard.getTag()).isEqualTo(tag);
     }
 
+    /*
     @Test
     public void 좋아요가_변경된다() {
 
@@ -136,7 +143,7 @@ class BoardServiceTest {
         boardService.updateLikes(findBoard.getId(), Boolean.FALSE);
         assertThat(findBoard.getLikes()).isEqualTo(0);
     }
-
+     */
     @Test
     public void 조회수가_올라간다() {
 
@@ -189,23 +196,29 @@ class BoardServiceTest {
         String title = "42gg";
         String content = "ping-ping";
         String tag = "game";
-        BoardSaveRequestDto boardSaveRequestDto = BoardSaveRequestDto.builder()
+        BoardSaveRequestDto boardSaveRequestDto1 = BoardSaveRequestDto.builder()
                 .title(title)
                 .content(content)
                 .tag(tag)
+                .userId(user1.getId())
+                .build();
+        BoardSaveRequestDto boardSaveRequestDto2 = BoardSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .tag(tag)
+                .userId(user2.getId())
                 .build();
         //when
-        boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+        boardService.save(boardSaveRequestDto1);
 
-        boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
-        boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
+        boardService.save(boardSaveRequestDto2);
+        boardService.save(boardSaveRequestDto2);
 
         //then
-        List<Board> boardList1 = boardService.findAllByUsername(user1.getUsername());
-        List<Board> boardList2 = boardService.findAllByUsername(user2.getUsername());
-
-        assertThat(boardList1.size()).isEqualTo(1);
-        assertThat(boardList2.size()).isEqualTo(2);
+        BoardListResponseDto boardListDto1 = boardService.findBoardsByUsername(user1.getUsername());
+        BoardListResponseDto boardListDto2 = boardService.findBoardsByUsername(user2.getUsername());
+        assertThat(boardListDto1.getBoardDtoList().size()).isEqualTo(1);
+        assertThat(boardListDto2.getBoardDtoList().size()).isEqualTo(2);
     }
 
     @Test
@@ -236,13 +249,20 @@ class BoardServiceTest {
         String title = "42gg";
         String content = "ping-ping";
         String tag = "game";
-        BoardSaveRequestDto boardSaveRequestDto = BoardSaveRequestDto.builder()
+        BoardSaveRequestDto boardSaveRequestDto1 = BoardSaveRequestDto.builder()
                 .title(title)
                 .content(content)
                 .tag(tag)
+                .userId(user1.getId())
                 .build();
-        Board board1 = boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
-        Board board2 = boardService.save(user2.getId(), boardSaveRequestDto.toEntity());
+        BoardSaveRequestDto boardSaveRequestDto2 = BoardSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .tag(tag)
+                .userId(user2.getId())
+                .build();
+        Board board1 = boardService.save(boardSaveRequestDto1);
+        Board board2 = boardService.save(boardSaveRequestDto2);
         //when
         BoardDeleteRequestDto user1Board2DelDto = BoardDeleteRequestDto.builder()
                 .userId(user1.getId())
@@ -253,13 +273,15 @@ class BoardServiceTest {
                 .boardId(board1.getId())
                 .build();
 
-        List<Board> boardList1 = boardService.findAllByUsername(user1.getUsername());
+        BoardListResponseDto boardDtoList = boardService.findBoardsByUsername(user1.getUsername());
+
         //then
         boardService.delete(user1Board2DelDto);
-        assertThat(boardList1.size()).isEqualTo(1);
+        assertThat(boardDtoList.getSize()).isEqualTo(1);
+        assertThat(boardDtoList.getSize()).isEqualTo(1);
         boardService.delete(user1Board1DelDto);
-        boardList1 = boardService.findAllByUsername(user1.getUsername());
-        assertThat(boardList1.size()).isEqualTo(0);
+        boardDtoList = boardService.findBoardsByUsername(user1.getUsername());
+        assertThat(boardDtoList.getSize()).isEqualTo(0);
     }
 
     @Test
@@ -286,12 +308,13 @@ class BoardServiceTest {
                 .title(title)
                 .content(content)
                 .tag(tag)
+                .userId(user1.getId())
                 .build();
         //when
-        Board firstBoard = boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+        Board firstBoard = boardService.save(boardSaveRequestDto);
         int totalBoards = 42;
         for(int i=1; i <totalBoards; ++i)
-            boardService.save(user1.getId(), boardSaveRequestDto.toEntity());
+            boardService.save(boardSaveRequestDto);
 
         //then
         int page = 1;
