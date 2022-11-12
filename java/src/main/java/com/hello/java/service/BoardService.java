@@ -30,9 +30,8 @@ public class BoardService {
 //    }
 
     public Board save(BoardSaveRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow();
         Board board = requestDto.toEntity();
-        board.setUser(user);
+        board.setUser(userRepository.findById(requestDto.getUserId()).orElseThrow());
         boardRepository.save(board);
         return board;
     }

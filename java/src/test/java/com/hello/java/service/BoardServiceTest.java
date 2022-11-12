@@ -118,32 +118,6 @@ class BoardServiceTest {
         assertThat(findBoard.getTag()).isEqualTo(tag);
     }
 
-    /*
-    @Test
-    public void 좋아요가_변경된다() {
-
-        String title = "42gg";
-        String content = "salee";
-
-        boardRepository.save(BoardSaveRequestDto.builder()
-                .title(title)
-                .content(content)
-                .build()
-                .toEntity());
-
-        // when
-        List<Board> findBoards = boardRepository.findAll();
-
-        //then
-        Long deltaLikes1 = 10L;
-        Board findBoard = findBoards.get(0);
-
-        boardService.updateLikes(findBoard.getId(), Boolean.TRUE);
-        assertThat(findBoard.getLikes()).isEqualTo(1);
-        boardService.updateLikes(findBoard.getId(), Boolean.FALSE);
-        assertThat(findBoard.getLikes()).isEqualTo(0);
-    }
-     */
     @Test
     public void 조회수가_올라간다() {
 

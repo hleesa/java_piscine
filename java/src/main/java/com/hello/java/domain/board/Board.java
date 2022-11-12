@@ -54,4 +54,9 @@ public class Board extends BaseTimeEntity {
     public void updateViews() {
         ++this.views;
     }
+
+    public void addLikes(Likes likes) {
+        this.likes.add(likes);
+        likes.setBoard(this);
+    }
 }
