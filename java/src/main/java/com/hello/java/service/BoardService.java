@@ -31,14 +31,17 @@ public class BoardService {
     public Long update(BoardUpdateRequestDto requestDto) {
 
         Board oldBoard = boardRepository.findById(requestDto.getBoardId()).orElseThrow();
+        System.out.println("temp");
+        System.out.println(oldBoard.getUser().toString());
+        System.out.println(oldBoard.getLikes().size());
         Board newBoard = requestDto.toEntity();
         oldBoard.update(newBoard);
         return oldBoard.getId();
     }
 
-    @Transactional(readOnly = true)
     public BoardResponseDto findOne(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow();
+        board.updateViews();
         return new BoardResponseDto(board);
     }
 

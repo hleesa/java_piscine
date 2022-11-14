@@ -45,16 +45,17 @@ public class Board extends BaseTimeEntity {
         this.title = board.getTitle();
         this.content = board.getContent();
         this.tag = board.getTag();
+        this.views = board.getViews();
     }
 
     public void setUser(User user) {
         this.user = user;
+        user.getBoardList().add(this);
     }
 
     public void updateViews() {
         ++this.views;
     }
-
     public void addLikes(Likes likes) {
         this.likes.add(likes);
         likes.setBoard(this);

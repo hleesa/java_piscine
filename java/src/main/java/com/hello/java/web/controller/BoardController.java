@@ -21,7 +21,6 @@ public class BoardController {
 
     @GetMapping("/board/{boardId}")
     public BoardResponseDto findOne(@PathVariable("boardId") Long boardId) {
-        boardService.updateViews(boardId);
         return boardService.findOne(boardId);
     }
 
