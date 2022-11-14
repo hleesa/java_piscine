@@ -16,7 +16,6 @@ class UserServiceTest {
 
     @Autowired
     UserService userService;
-
     @Autowired
     UserRepository userRepository;
 
@@ -48,14 +47,13 @@ class UserServiceTest {
         String username = "salee2";
         String password = "42gg";
 
-        User user = UserSaveRequestDto.builder()
+        User user = User.builder()
                 .username(username)
                 .password(password)
-                .build()
-                .toEntity();
+                .build();
         //when
-        userService.join(user);
-        User findUser = userRepository.findByUsername(username).orElseThrow();
+        userRepository.save(user);
+        User findUser = userService.findByName(username);
 
         //then
         assertThat(findUser.getUsername()).isEqualTo(username);
@@ -68,16 +66,14 @@ class UserServiceTest {
         String username = "salee2";
         String password = "42gg";
 
-        User user1 = UserSaveRequestDto.builder()
+        User user1 = User.builder()
                 .username(username)
                 .password(password)
-                .build()
-                .toEntity();
-        User user2 = UserSaveRequestDto.builder()
+                .build();
+        User user2 = User.builder()
                 .username(username)
                 .password(password)
-                .build()
-                .toEntity();
+                .build();
         //when
         userService.join(user1);
         //then
