@@ -27,8 +27,6 @@ class BoardServiceTest {
     UserRepository userRepository;
     @Autowired
     BoardService boardService;
-    @Autowired
-    UserService userService;
 
     @Test
     public void 게시글이_저장된다() {
@@ -51,7 +49,6 @@ class BoardServiceTest {
                 .tag(tag)
                 .user(user)
                 .build();
-
         boardRepository.save(board);
 
         // when
