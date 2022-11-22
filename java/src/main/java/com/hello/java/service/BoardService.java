@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,52 +21,33 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-//    public Board save(Long userId, Board board) {
-//        User user = userRepository.findById(userId).orElseThrow();
-//        board.setUser(user);
-//        boardRepository.save(board);
-//        return board;
-//    }
-
     public Board save(BoardSaveRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow();
         Board board = requestDto.toEntity();
-        board.setUser(user);
+        board.setUser(userRepository.findById(requestDto.getUserId()).orElseThrow());
         boardRepository.save(board);
         return board;
     }
 
-
-//    public Long update(Long id, Board newBoard) {
-//        Board oldBoard = findOne(id).toEntity();
-//        oldBoard.update(newBoard);
-//        return id;
-//    }
-
     public Long update(BoardUpdateRequestDto requestDto) {
 
         Board oldBoard = boardRepository.findById(requestDto.getBoardId()).orElseThrow();
+        System.out.println("temp");
+        System.out.println(oldBoard.getUser().toString());
+        System.out.println(oldBoard.getLikes().size());
         Board newBoard = requestDto.toEntity();
         oldBoard.update(newBoard);
         return oldBoard.getId();
     }
 
-
-    @Transactional(readOnly = true)
     public BoardResponseDto findOne(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow();
+        board.updateViews();
         return new BoardResponseDto(board);
     }
 
     @Transactional(readOnly = true)
     public BoardListResponseDto finaAll() {
-
-        List<Board> boardList = boardRepository.findAll();
-        BoardListResponseDto boardListResponseDto = BoardListResponseDto.builder()
-                .boardDtoList(boardList)
-                .size(boardList.size())
-                .build();
-        return boardListResponseDto;
+        return BoardListResponseDto.from(boardRepository.findAll());
     }
 
     public void delete(BoardDeleteRequestDto requestDto) {
@@ -86,11 +66,7 @@ public class BoardService {
     @Transactional(readOnly = true)
     public BoardListResponseDto findBoardsByUsername(String username) {
         List<Board> boardList = boardRepository.findBoardsByUserUsername(username);
-        // repository에서 BoardListDto반환 가능?
-        return BoardListResponseDto.builder()
-                .boardDtoList(boardList)
-                .size(boardList.size())
-                .build();
+        return BoardListResponseDto.from(boardList);
     }
 
     @Transactional(readOnly = true)

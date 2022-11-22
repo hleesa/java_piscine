@@ -1,10 +1,13 @@
 package com.hello.java.domain.user;
 
+import com.hello.java.domain.board.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -18,6 +21,9 @@ public class User{
     private Long id;
     private String username;
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Board> boardList = new ArrayList<>();
 
     @Builder
     public User(String username, String password) {

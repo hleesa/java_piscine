@@ -23,4 +23,12 @@ public class BoardListResponseDto{
         this.boardDtoList = boardDtoList.stream().map(BoardResponseDto::new).collect(Collectors.toList());
         this.size = size;
     }
+    public static BoardListResponseDto from(List<Board> boardDtoList) {
+        return BoardListResponseDto.builder()
+                .boardDtoList(boardDtoList)
+                .size(boardDtoList.size())
+                .build();
+    }
+
+
 }

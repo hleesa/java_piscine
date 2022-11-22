@@ -31,4 +31,9 @@ public class Likes extends BaseTimeEntity {
         this.user = user;
         this.board = board;
     }
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+
 }

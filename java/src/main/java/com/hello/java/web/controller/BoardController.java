@@ -19,18 +19,10 @@ public class BoardController {
         return boardService.save(requestDto);
     }
 
-//    @GetMapping("/board/{boardId}")
-//    public Board findOne(@PathVariable("boardId") Long boardId) {
-//        boardService.updateViews(boardId);
-//        return boardService.findOne(boardId).orElseThrow();
-//    }
-
     @GetMapping("/board/{boardId}")
     public BoardResponseDto findOne(@PathVariable("boardId") Long boardId) {
-        boardService.updateViews(boardId);
         return boardService.findOne(boardId);
     }
-
 
     @GetMapping("/board")
     public BoardListResponseDto findAll() {
