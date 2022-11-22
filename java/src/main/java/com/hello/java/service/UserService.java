@@ -3,7 +3,6 @@ package com.hello.java.service;
 import com.hello.java.domain.user.User;
 import com.hello.java.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,5 +29,16 @@ public class UserService {
                     throw new IllegalStateException("이미 존재하는 회원입니다.");
                 });
     }
+
+    @Transactional(readOnly = true)
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    public User findByName(String username) {
+        return userRepository.findByUsername(username).orElseThrow();
+    }
+
 
 }

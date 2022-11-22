@@ -2,9 +2,12 @@ package com.hello.java.service;
 
 import com.hello.java.domain.board.Board;
 import com.hello.java.domain.board.BoardRepository;
-import com.hello.java.web.dto.BoardListResponseDto;
-import com.hello.java.web.dto.BoardUpdateRequestDto;
-import lombok.AllArgsConstructor;
+import com.hello.java.domain.user.User;
+import com.hello.java.domain.user.UserRepository;
+import com.hello.java.web.dto.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,54 +15,86 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
-    @Transactional
-    public Board save(Board board) {
-        return boardRepository.save(board);
+//    public Board save(Long userId, Board board) {
+//        User user = userRepository.findById(userId).orElseThrow();
+//        board.setUser(user);
+//        boardRepository.save(board);
+//        return board;
+//    }
+
+    public Board save(BoardSaveRequestDto requestDto) {
+        User user = userRepository.findById(requestDto.getUserId()).orElseThrow();
+        Board board = requestDto.toEntity();
+        board.setUser(user);
+        boardRepository.save(board);
+        return board;
     }
 
-    @Transactional
-    public Long update(Long id, Board newBoard) {
-        Board oldBoard = findOne(id).orElseThrow();
+
+//    public Long update(Long id, Board newBoard) {
+//        Board oldBoard = findOne(id).toEntity();
+//        oldBoard.update(newBoard);
+//        return id;
+//    }
+
+    public Long update(BoardUpdateRequestDto requestDto) {
+
+        Board oldBoard = boardRepository.findById(requestDto.getBoardId()).orElseThrow();
+        Board newBoard = requestDto.toEntity();
         oldBoard.update(newBoard);
-        return id;
+        return oldBoard.getId();
+    }
+
+
+    @Transactional(readOnly = true)
+    public BoardResponseDto findOne(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
+        return new BoardResponseDto(board);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Board> findOne(Long boardId) {
-        return boardRepository.findById(boardId);
-    }
+    public BoardListResponseDto finaAll() {
 
-    @Transactional(readOnly = true)
-    public BoardListResponseDto findBoards() {
-
-        List<Board> boards = boardRepository.findAll();
-        BoardListResponseDto boardBoardListResponseDto = BoardListResponseDto.builder()
-                .boards(boards)
-                .total(boards.size())
+        List<Board> boardList = boardRepository.findAll();
+        BoardListResponseDto boardListResponseDto = BoardListResponseDto.builder()
+                .boardDtoList(boardList)
+                .size(boardList.size())
                 .build();
-        return boardBoardListResponseDto;
+        return boardListResponseDto;
     }
 
-    @Transactional
-    public void delete(Long id) {
-        Board board = boardRepository.findById(id).orElseThrow();
-        boardRepository.delete(board);
+    public void delete(BoardDeleteRequestDto requestDto) {
+        Long boardId = requestDto.getBoardId();
+        Long userId = requestDto.getUserId();
+        Board board = boardRepository.findById(boardId).orElseThrow();
+        if (board.getUser().getId() == userId)
+            boardRepository.delete(board);
     }
 
-    @Transactional
-    public void updateLikes(Long id, Boolean isLike) {
-        Board findBoard = findOne(id).orElseThrow();
-        findBoard.updateLike(isLike);
-    }
-
-    @Transactional
     public void updateViews(Long id) {
-        Board findBoard = findOne(id).orElseThrow();
+        Board findBoard = findOne(id).toEntity();
         findBoard.updateViews();
+    }
+
+    @Transactional(readOnly = true)
+    public BoardListResponseDto findBoardsByUsername(String username) {
+        List<Board> boardList = boardRepository.findBoardsByUserUsername(username);
+        // repository에서 BoardListDto반환 가능?
+        return BoardListResponseDto.builder()
+                .boardDtoList(boardList)
+                .size(boardList.size())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Board> findPageByUsername(String username, Pageable pageable) {
+        return boardRepository.findAllByUserUsername(username, pageable);
     }
 }
